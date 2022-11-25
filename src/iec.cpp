@@ -27,7 +27,7 @@ static byte readByte()
   }
 
   untilLow(clk_bus);
-  LOG_BYTES("Received: %02x\n", b);
+  LOG_BYTES("Received: %02x", b);
   return b;
 }
 
@@ -45,7 +45,7 @@ static void sendByte(byte b)
   }
   clk_bus.hold();
   untilLow(data_bus);
-  LOG_BYTES("Sent: %02x\n", b);
+  LOG_BYTES("Sent: %02x", b);
   busy_wait_us(200);
 }
 
@@ -53,28 +53,28 @@ void command::print()
 {
   switch (type) {
     case COMMAND_TYPE::LISTEN:
-      LOG_COMMAND("Listen: %x\n", data);
+      LOG_COMMAND("Listen: %x", data);
       break;
     case COMMAND_TYPE::UNLISTEN:
-      LOG_COMMAND("Unlisten\n");
+      LOG_COMMAND("Unlisten");
       break;
     case COMMAND_TYPE::TALK:
-      LOG_COMMAND("Talk: %x\n", data);
+      LOG_COMMAND("Talk: %x", data);
       break;
     case COMMAND_TYPE::UNTALK:
-      LOG_COMMAND("Untalk\n");
+      LOG_COMMAND("Untalk");
       break;
     case COMMAND_TYPE::REOPEN:
-      LOG_COMMAND("Reopen: %x\n", data);
+      LOG_COMMAND("Reopen: %x", data);
       break;
     case COMMAND_TYPE::CLOSE:
-      LOG_COMMAND("Close: %x\n", data);
+      LOG_COMMAND("Close: %x", data);
       break;
     case COMMAND_TYPE::OPEN:
-      LOG_COMMAND("Open: %x\n", data);
+      LOG_COMMAND("Open: %x", data);
       break;
     default:
-      LOG_COMMAND("Unknown: %x\n", data);
+      LOG_COMMAND("Unknown: %x", data);
       break;
   }
 }
@@ -107,7 +107,7 @@ void serial::tick()
   }
 
   if (state != prev) {
-    LOG_STATE("State changed: %s -> %s\n", toChars(prev), toChars(state));
+    LOG_STATE("State changed: %s -> %s", toChars(prev), toChars(state));
   }
 }
 
@@ -118,7 +118,7 @@ void serial::checkAttn() {
   if (atn && clk &&
       state != STATE::ATTN) {
 
-    LOG_DETAILED("Atn Received\n");
+    LOG_DETAILED("Atn Received");
     listener = false;
     talker = false;
     state = STATE::ATTN;
@@ -126,7 +126,7 @@ void serial::checkAttn() {
 
   if ((not atn) &&
       state == STATE::ATTN) {
-    LOG_DETAILED("Atn Exited\n");
+    LOG_DETAILED("Atn Exited");
     state = STATE::TURNAROUND;
   }
 }
@@ -174,7 +174,7 @@ void serial::processCommand(byte b) {
 }
 
 byte serial::receive() {
-  LOG_DETAILED("Receiving data\n");
+  LOG_DETAILED("Receiving data");
   busy_wait_us(LISTENER_HOLD_OFF);
 
   untilHigh(data_bus);
@@ -182,7 +182,7 @@ byte serial::receive() {
 
   if (untilLow(clk_bus, EOI_TIME)) {
   } else {
-    LOG_DETAILED("EOI\n");
+    LOG_DETAILED("EOI");
     data_bus.hold();
     busy_wait_us(EOI_HOLD);
     data_bus.release();
@@ -195,7 +195,7 @@ byte serial::receive() {
   auto b = readByte();
 
   if (bus::timeout_occured) {
-    LOG_ERROR("Timeout during read\n");
+    LOG_ERROR("Timeout during read");
     state = STATE::IDLE;
     return 0;
   } else {
@@ -247,7 +247,7 @@ void serial::doTurnaround() {
     if (untilHigh(clk_bus, 100)) {
       state = STATE::TALK;
     } else {
-      LOG_ERROR("Error during turnaround\n");
+      LOG_ERROR("Error during turnaround");
     }
     clk_bus.hold();
     busy_wait_us(200);
@@ -269,9 +269,9 @@ void serial::doTalk() {
     auto b = stream::read();
 
     bus::timeout_occured = false;
-    LOG_DETAILED("Talking\n");
+    LOG_DETAILED("Talking");
     if (stream::eoi()) {
-      LOG_DETAILED("Sending EOI\n");
+      LOG_DETAILED("Sending EOI");
       untilLow(data_bus);
       untilHigh(data_bus);
       busy_wait_us(20);
@@ -280,7 +280,7 @@ void serial::doTalk() {
     busy_wait_us(200);
 
     if (bus::timeout_occured) {
-      LOG_ERROR("Timout during talk\n");
+      LOG_ERROR("Timout during talk");
       state = STATE::IDLE;
     }
   }
