@@ -105,6 +105,8 @@ bool stream::available()
 /* c64 -> pico */
 
 static frame receiving{};
+static uint8_t primary{};
+static uint8_t secondary{};
 
 void stream::flush()
 {
@@ -112,11 +114,25 @@ void stream::flush()
         c64_to_device.push(receiving);
         memset(&receiving, 0, sizeof(frame));
     }
+    receiving.device = primary;
+    receiving.channel = secondary;
 }
 
 void stream::set(frame_type type)
 {
     receiving.type = type;
+}
+
+void stream::setDevice(uint8_t device)
+{
+    primary = device;
+    receiving.device = device;
+}
+
+void stream::setChannel(uint8_t channel)
+{
+    secondary = channel;
+    receiving.channel = channel;
 }
 
 void stream::write(char c)

@@ -138,6 +138,7 @@ void serial::processCommand(byte b) {
     case COMMAND_TYPE::LISTEN:
       listener = true;
       device_id = cmd.data;
+      stream::setDevice(device_id);
       break;
     case COMMAND_TYPE::UNLISTEN:
       listener = false;
@@ -151,12 +152,21 @@ void serial::processCommand(byte b) {
       break;
     case COMMAND_TYPE::REOPEN:
       channel_id = cmd.data;
+      stream::setChannel(channel_id);
+      stream::set(FRAME_REOPEN);
+      stream::flush();
       break;
     case COMMAND_TYPE::CLOSE:
       channel_id = cmd.data;
+      stream::setChannel(channel_id);
+      stream::set(FRAME_CLOSE);
+      stream::flush();
       break;
     case COMMAND_TYPE::OPEN:
       channel_id = cmd.data;
+      stream::setChannel(channel_id);
+      stream::set(FRAME_OPEN);
+      stream::flush();
       break;
     default:
       break;

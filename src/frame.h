@@ -11,6 +11,7 @@ typedef enum frame_type {
     FRAME_EOI,
     FRAME_OPEN,
     FRAME_CLOSE,
+    FRAME_REOPEN,
     FRAME_TYPE_MAX_
 } frame_type;
 
@@ -20,6 +21,7 @@ frame_type_string[] = {
     "EOI",
     "OPEN",
     "CLOSE",
+    "REOPEN",
 };
 
 typedef struct frame {

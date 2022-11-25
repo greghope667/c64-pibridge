@@ -22,5 +22,7 @@ namespace stream
     void write(char);
     void flush();
     void set(frame_type type);
+    void setDevice(uint8_t device);
+    void setChannel(uint8_t channel);
     void logf(const char* fmt, ...) __attribute__((format (printf, 1, 2)));
 }
