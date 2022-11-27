@@ -70,7 +70,7 @@ static int readloop(serial pico)
             serial_err();
             status = 1;
             goto free_event_set;
-        } else if (n < sizeof(f)) {
+        } else if (n < (int)sizeof(f)) {
             fprintf(stderr, "Error - partial frame (%i/%zu)\n", n, sizeof(f));
         } else {
             print_frame(f);
@@ -84,7 +84,6 @@ free_event_set:
 
 int main(int argc, char** argv)
 {
-    frame buf;
     char* path;
     int status = 0;
 
@@ -116,4 +115,5 @@ close_port:
     sp_close(pico);
 free_port:
     sp_free_port(pico);
+    return status;
 }
